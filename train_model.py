@@ -16,7 +16,7 @@ import pandas as pd
 import numpy as np
 import os
 
-code_path = '/media/wislab/DataSet/jiang/FaceDataSet/'
+code_path = 'F:\\Github\\competition\\TinyMind_first_contest\\'
 
 
 # bn + prelu
@@ -186,10 +186,10 @@ def mygenerator(generator):
 def model_train(model, loadweights, isCenterloss, lambda_center):
     lr = LearningRateScheduler(lrschedule)
     mdcheck = ModelCheckpoint(WEIGHTS_PATH, monitor='val_acc', save_best_only=True)
-    td = TensorBoard(log_dir=code_path + 'image_data/tensorboard_log/')
+    td = TensorBoard(log_dir=code_path + 'image_data\\tensorboard_log\\')
 
     if loadweights:
-        if os.path.isfile(WEIGHTS_PATH):
+        if os.path.isfile(WEIGHTS_PATH):            
             assert model.load_weights(WEIGHTS_PATH)
             print('model have load pre weights of hanzi image !!')
         else:
@@ -222,8 +222,8 @@ def model_train(model, loadweights, isCenterloss, lambda_center):
                                                  steps_per_epoch=32000 // BATCH_SIZE,
                                                  epochs=max_Epochs,
                                                  validation_data=val_generator_mygenerator,
-                                                 validation_steps=8000 // BATCH_SIZE
-        callbacks = [lr, mdcheck, td])
+                                                 validation_steps=8000 // BATCH_SIZE,
+                                                 callbacks=[lr, mdcheck, td])
 
         return history
 
@@ -245,7 +245,7 @@ def model_train(model, loadweights, isCenterloss, lambda_center):
         plt.xlabel('epochs')
         plt.ylabel('loss')
         plt.show()
-        plt.savefig(code_path + 'image_data/image/loss.png', format='png', dpi=300)
+        plt.savefig(code_path + 'image_data\\image\\loss.png', format='png', dpi=300)
 
         plt.figure(figsize=(10, 6))
         plt.title('learninngRate = %s, batch_size = %s' % ('accuracy', BATCH_SIZE))
@@ -255,7 +255,7 @@ def model_train(model, loadweights, isCenterloss, lambda_center):
         plt.xlabel('epochs')
         plt.ylabel('acc')
         plt.show()
-        plt.savefig(code_path + 'image_data/image/acc.png', format='png', dpi=300)
+        plt.savefig(code_path + 'image_data\\image\\acc.png', format='png', dpi=300)
 
     # label for directory in disk
     def label_of_directory(directory):
@@ -383,66 +383,58 @@ def model_train(model, loadweights, isCenterloss, lambda_center):
         save_arr.to_csv('submit_test.csv', decimal=',', encoding='utf-8', index=False, index_label=False)
         print('submit_test.csv have been write, locate is :', os.getcwd())
 
-    # main function
-    if __name__ == "__main__":
-        train_path = code_path + 'image_data/train_data/'
-        val_path = code_path + 'image_data/val_data/'
-        test_image_path = 'image_data/test1/'
-        num_classes = 100
-        BATCH_SIZE = 128
-        WEIGHTS_PATH = 'best_weights_hanzi.hdf5'
-        max_Epochs = 100
+# main function
 
-        train_datagen = ImageDataGenerator(
-            rescale=1. / 255,
-            horizontal_flip=True
-        )
+if __name__ == "__main__":
+    train_path = 'F:\\Github\\competition\\data\\face_data\\face_tra\\'
+    val_path = 'F:\\Github\\competition\\data\\face_data\\face_val\\'
+    test_image_path = 'F:\\Github\\competition\\data\\test1\\'
+    num_classes = 100
+    BATCH_SIZE = 128
+    WEIGHTS_PATH = 'F:\\Github\\competition\\TinyMind_first_contest\\best_weights_hanzi.hdf5'
+    max_Epochs = 100
 
-        val_datagen = ImageDataGenerator(
-            rescale=1. / 255
-        )
+    train_datagen = ImageDataGenerator(
+        rescale=1. / 255,
+        horizontal_flip=True
+    )
 
-        train_generator = train_datagen.flow_from_directory(
-            train_path,
-            target_size=(128, 128),
-            batch_size=BATCH_SIZE,
-            color_mode='grayscale',
-            class_mode='categorical'
-        )
-        val_generator = val_datagen.flow_from_directory(
-            val_path,
-            target_size=(128, 128),
-            batch_size=BATCH_SIZE,
-            color_mode='grayscale',
-            class_mode='categorical'
-        )
+    val_datagen = ImageDataGenerator(
+        rescale=1. / 255
+    )
 
-        simple_model = build_model(num_classes)
-        print(simple_model.summary())
+    train_generator = train_datagen.flow_from_directory(
+        train_path,
+        target_size=(128, 128),
+        batch_size=BATCH_SIZE,
+        color_mode='grayscale',
+        class_mode='categorical'
+    )
+    val_generator = val_datagen.flow_from_directory(
+        val_path,
+        target_size=(128, 128),
+        batch_size=BATCH_SIZE,
+        color_mode='grayscale',
+        class_mode='categorical'
+    )
 
-        print("=====start train image of epoch=====")
+    simple_model = build_model(num_classes)
+    print(simple_model.summary())
 
-        model_history = model_train(simple_model, False)
+    print("=====start train image of epoch=====")
 
-        print("=====show acc and loss of train and val====")
-        draw_loss_acc(model_history)
+    model_history = model_train(simple_model, True, False, 0.01)
 
-        print("=====test label=====")
-        simple_model.load_weights(WEIGHTS_PATH)
-        model = simple_model
-        predict_label = test_image_predict_top_k(model, code_path + test_image_path, train_path, 5)
+    print("=====show acc and loss of train and val====")
+    draw_loss_acc(model_history)
 
-        print("=====csv save=====")
-        save_csv(code_path + test_image_path, predict_label)
+    print("=====test label=====")
+    simple_model.load_weights(WEIGHTS_PATH)
+    model = simple_model
+    predict_label = test_image_predict_top_k(model,  test_image_path, train_path, 5)
 
-        print("====done!=====")
+    print("=====csv save=====")
+    save_csv(code_path + 'result\\', predict_label)
 
-
-
-
-
-
-
-
-
+    print("====done!=====")
 

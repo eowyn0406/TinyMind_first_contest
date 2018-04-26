@@ -66,17 +66,17 @@ def move_ratio(data_list, original_str, replace_str):
 
 if __name__ == '__main__':
 
-    face_path = '/Users/jmc/Desktop/facepaper/newFaceScrub_clean/'
-    data_tra_path = '/Users/jmc/Desktop/facepaper/face_data/face_tra/'
-    data_val_path = '/Users/jmc/Desktop/facepaper/face_data/face_val/'
+    face_path = 'F:\\Github\\competition\\data\\train\\'
+    data_tra_path = 'F:\\Github\\competition\\data\\face_data\\face_tra\\'
+    data_val_path = 'F:\\Github\\competition\\data\\face_data\\face_val\\'
 
     full_child_file, child_file = eachFile(face_path)
 
     # 建立相应的文件夹
     for i in child_file:
-        tra_path = data_tra_path + '/' + str(i)
+        tra_path = data_tra_path + '\\' + str(i)
         mkdir(tra_path)
-        val_path = data_val_path + '/' + str(i)
+        val_path = data_val_path + '\\' + str(i)
         mkdir(val_path)
 
     # 划分train和val
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         # train_move, val_move
         print('proprecessing %s' % i)
 
-        move_ratio(train_list, 'newFaceScrub_clean', 'face_data/face_tra')
-        move_ratio(val_list, 'newFaceScrub_clean', 'face_data/face_val')
+        move_ratio(train_list, 'train', 'face_data/face_tra')
+        move_ratio(val_list, 'train', 'face_data/face_val')
 
 
