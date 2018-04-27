@@ -137,7 +137,7 @@ def resnet50_100(feat_dims, out_dims):
 
 # learning rate of epoch
 def lrschedule(epoch):
-    if epoch <= 40:
+    if epoch <= 50:
         return 0.1
     elif epoch <= 80:
         return 0.01
@@ -377,7 +377,7 @@ def save_csv(test_image_path, predict_label):
     save_arr = pd.DataFrame(save_arr, columns=['filename', 'label'])
     predict_label = tran_list2str(predict_label)
     for i in range(len(image_list)):
-        filename = image_list[i].split('/')[-1]
+        filename = image_list[i].split('\\')[-1]
         save_arr.values[i, 0] = filename
         save_arr.values[i, 1] = predict_label[i]
     save_arr.to_csv('submit_test.csv', decimal=',', encoding='utf-8', index=False, index_label=False)
@@ -392,7 +392,7 @@ if __name__ == "__main__":
     num_classes = 100
     BATCH_SIZE = 128
     WEIGHTS_PATH = 'F:\\Github\\competition\\TinyMind_first_contest\\chinese_font_re\\best_weights_hanzi.hdf5'
-    max_Epochs = 1
+    max_Epochs = 110
 
     train_datagen = ImageDataGenerator(
         rescale=1. / 255,
@@ -431,8 +431,9 @@ if __name__ == "__main__":
     print("=====test label=====")
     simple_model.load_weights(WEIGHTS_PATH)
     model = simple_model
-    predict_label = test_image_predict_top_k(model,  test_image_path, train_path, 5)
-
+    # predict_label = test_image_predict_top_k(model,  test_image_path, train_path, 5)
+    
+    predict_label = test_image_predict_top1(model,  test_image_path, train_path)
     print("=====csv save=====")
     save_csv(test_image_path, predict_label)
 
